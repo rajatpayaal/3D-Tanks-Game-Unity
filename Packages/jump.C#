@@ -1,0 +1,46 @@
+using UnityEngine;
+
+public class PlayerController : MonoBehaviour
+{
+    public float speed = 5f;  // Player movement speed
+    public float jumpForce = 10f;  // Force applied when jumping
+    private bool isGrounded;  // Check if the player is on the ground
+    private Rigidbody2D rb;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
+
+    void Update()
+    {
+        // Check for player input
+        float moveInput = Input.GetAxis("Horizontal");
+        Vector2 moveVelocity = new Vector2(moveInput * speed, rb.velocity.y);
+        rb.velocity = moveVelocity;
+
+        // Check for jumping input
+        if (isGrounded && Input.GetButtonDown("Jump"))
+        {
+            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Check if the player is on the ground
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        // Check if the player leaves the ground
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false;
+        }
+    }
+}
